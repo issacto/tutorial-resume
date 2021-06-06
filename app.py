@@ -5,12 +5,13 @@ from flask import Flask
 from flask import render_template,request, jsonify, make_response
 from flask_cors import CORS
 import boto3
-from secrets import access, secret
+import json
 from time import time, ctime
 
 app = Flask(__name__)
 cache = redis.Redis(host='redis', port=6379)
 count =0 
+
 
 CORS(app)
 cors = CORS(app, resource={
@@ -41,17 +42,14 @@ def hello():
 
 @app.route("/submitContact", methods=["POST"])
 def submitContact():
-    dynamodb = boto3.resource('dynamodb',
-                        aws_access_key_id= access,
-                        aws_secret_access_key= secret,
-                        region_name = 'us-east-1',)
+    jsonFile = open('secrets.json')
+    data = json.load(jsonFile)
+    dynamodb = boto3.resource('dynamodb',region_name='us-east-1',aws_access_key_id= data["access"], aws_secret_access_key= data["secret"])
     req = request.get_json()
-    movie_resp = put_contact("The Big New Movie", 2015,
-                           "Nothing happens at all.", 0,dynamodb)
+    contact = put_contact(req["email"],req["message"],req["name"],req["number"],dynamodb)
     print("Put movie succeeded:")
-    print("HALLOWORLD")
     print(req)
-    res = make_response(jsonify({"message": movie_resp}), 200)
+    res = make_response(jsonify({"message": contact}), 200)
     return res
 
 ### Functions
