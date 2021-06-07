@@ -1,4 +1,4 @@
-# Tutorial Resume
+# Tutorial Resume (in traditional chinese)
 
 * Aims: A simple one-page website about my tutorial services
 * Tools : Docker, Flask, Aws Dynamo, Bootstrap
