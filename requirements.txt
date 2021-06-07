@@ -2,3 +2,4 @@ flask
 redis
 flask_cors
 boto3
+gunicorn==19.7.1

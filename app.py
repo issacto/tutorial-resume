@@ -7,9 +7,10 @@ from flask_cors import CORS
 import boto3
 import json
 from time import time, ctime
+import os
+
 
 app = Flask(__name__)
-cache = redis.Redis(host='redis', port=6379)
 count =0 
 
 
@@ -20,25 +21,13 @@ cors = CORS(app, resource={
     }
 })
 
-def get_hit_count():
-    retries = 5
-    while True:
-        try:
-            return cache.incr('hits')
-        except redis.exceptions.ConnectionError as exc:
-            if retries == 0:
-                raise exc
-            retries -= 1
-            time.sleep(0.5)
+
 
 @app.route('/')
 def index():
     return render_template("index.html")
 
-@app.route('/hello')
-def hello():
-    count = get_hit_count()
-    return 'Hello World! I have been seen ' + str(count)+'times.\n'
+
 
 @app.route("/submitContact", methods=["POST"])
 def submitContact():
@@ -71,3 +60,8 @@ def put_contact(email, message, name, number, dynamodb=None):
         }
     )
     return response
+
+
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
