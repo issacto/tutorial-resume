@@ -263,11 +263,12 @@
                 })
                 .then(function(response) {
                     if (response.status !== 200) {
-                    console.log(`Looks like there was a problem. Status code: ${response.status}`);
+                    alert(`Looks like there was a problem. Status code: ${response.status}`);
                     return;
                     }
                     response.json().then(function(data) {
-                    console.log(data);
+                    //console.log(data);
+                    alert("Message Received")
                     });
                 })
                 .catch(function(error) {
